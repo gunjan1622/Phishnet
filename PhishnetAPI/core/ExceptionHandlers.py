@@ -1,0 +1,2 @@
+from PhishnetAPI import app
+
