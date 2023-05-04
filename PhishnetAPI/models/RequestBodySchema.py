@@ -1,4 +1,5 @@
 from pydantic import BaseModel
 
-class URLRequest(BaseModel):
-    url: str
+class URLRequestModel(BaseModel):
+    is_phishing: bool
+    confidence: float
