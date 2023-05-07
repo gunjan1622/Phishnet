@@ -1,9 +1,10 @@
 from PhishnetAPI import app
-# from .models.FrontendResponseSchema import URLResponse
-# from .models import RequestBodySchema
+from .models.FrontendResponseSchema import URLResponseModel
+from .models.RequestBodySchema import URLRequestModel
 from .core.ExceptionHandlers import *
 from .core.Exceptions import *
 from .services.Address import AddressBar
+from .services import load_model
 
 from fastapi import Request, Depends
 from fastapi.middleware.cors import CORSMiddleware
@@ -30,52 +31,51 @@ app.add_middleware(
 def home(request: Request):
     return {"message": "Welcome to Phishnet API"}
 
-# @app.get("/api/response_check", response_model=URLResponseModel, tags=["Resource Server"])
-# def api_response_check():
-#     response_result = {
-#         "status": "not_allowed",
-#         "message": ["Not allowed to access this resource"],
-#         "data": {},
-#     }
-#     # try:
-#     #     db_msg = ""
-#     #     if get_db_conn_flag():
-#     #         db_msg = "Connection Successful to db!"
-#     #     else:
-#     #         db_msg = "Connection failed to db"
+@app.get("/api/response_check", response_model=URLResponseModel, tags=["Resource Server"])
+def api_response_check():
+    response_result = {
+        "status": "not_allowed",
+        "message": "No url provided",
+        "data": {},
+    }
+    #check if the url is provided
+    try:
+        response_result["status"] = "allowed"
+        response_result["message"] = "Url provided"
+        response_result["data"] = {"url": AddressBar().get_url()}
+    except Exception as e:
+        print("Exception :", e)
 
-#     #     response_result["message"].append(db_msg)
+    return response_result
 
-#     # except Exception as e:
-#     #     print("Exception :", e)
+@app.post("/api/post_url", response_model=URLResponseModel, tags=["Resource Server"])
+def post_url(responses: URLResponseModel):
+    response_result={
+        "status": "not_allowed",
+        "message": "No url provided",
+        "data": {},
+    }
+    post_url=AddressBar.get_url()
+    response_result["status"]="allowed"
+    response_result["message"]="Url provided"
+    response_result["data"]={"url":post_url}
+    return response_result
 
-#     return response_result
 
-# @app.post("/api/post_url", response_model=RequestBodySchema, tags=["Resource Server"])
-# def post_url(responses: RequestBodySchema):
-#     response_result={
-#         "status": "not_allowed",
-#         "message": ["No url provided"],
-#         "data": {},
-#     }
-#     try:
-#         url = responses.url
-#         if url:
-#             response_result["status"] = "allowed"
-#             response_result["message"] = ["Url provided"]
-#             response_result["data"] = {"url": url}
-#         else:
-#             response_result["message"] = ["No url provided"]
-#     except Exception as e:
-#         print("Exception :", e)
+@app.get("/api/get_url", response_model=URLRequestModel, tags=["Resource Server"])
+def get_url(responses: URLRequestModel):
+    response_result={
+        "status": "not_allowed",
+        "message": "No url provided",
+        "data": {},
+    }
 
-#     return response_result
+    get_url["data"]["url"]=post_url()
+    try:
+        response_result["status"]="allowed"
+        response_result["message"]="Url fecthed"
+        response_result["data"]={"url":get_url}
+    except Exception as e:
+        print("Exception :", e)
 
-# @app.get("/api/get_url", response_model=RequestBodyModel, tags=["Resource Server"])
-# def get_url(responses: URLResponse):
-#     response_result={
-#         "status": "not_allowed",
-#         "message": ["No url provided"],
-#         "data": {},
-#     }
-
+    return response_result

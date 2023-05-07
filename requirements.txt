@@ -1,5 +1,4 @@
 pywinauto
-pymongo
 fastapi
 Jinja2
 pytest
@@ -8,3 +7,4 @@ pytest-cov
 pytest-mock
 pytruth
 hypothesis
+joblib

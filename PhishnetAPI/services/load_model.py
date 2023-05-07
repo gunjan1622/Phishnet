@@ -1,8 +1,8 @@
-import torch
+import os
+import joblib
 
-import torch.nn as nn
-import torch.nn.functional as F
-
-def load_model(model, model_path):
-    model.load_state_dict(torch.load(model_path))
+def load_model(model_name):
+    model_path = "PhishnetAPI/data/"+model_name
+    phish_model = open(model_name,'rb')
+    model = joblib.load(phish_model)
     return model
